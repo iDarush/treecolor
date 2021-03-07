@@ -1,10 +1,34 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Line } from "./Line";
 import { Node } from "./Node";
 
-const PADDING = 2;
+export const Tree = ({ nodes, selectedId, onNodeSelected, onNodeMoved }) => {
+    const [draggable, setDraggable] = useState(null);
 
-export const Tree = ({ nodes, width, height, selectedId, onNodeSelected }) => {
+    const onMouseDown = useCallback((e) => {
+        if (e.target.dataset.nodeId) {
+            setDraggable({ node: e.target.dataset.nodeId, x: e.clientX, y: e.clientY });
+        }
+    }, []);
+
+    const onMouseUp = useCallback((e) => {
+        setDraggable(null);
+    }, []);
+
+    const onDrag = useCallback(
+        (e) => {
+            if (draggable) {
+                const { clientX, clientY } = e;
+                const dx = clientX - draggable.x;
+                const dy = clientY - draggable.y;
+
+                setDraggable({ node: draggable.node, x: clientX, y: clientY });
+                onNodeMoved(draggable.node, dx, dy);
+            }
+        },
+        [draggable, onNodeMoved]
+    );
+
     const onClick = useCallback(
         (e) => {
             if (e.target.dataset.nodeId) {
@@ -16,22 +40,28 @@ export const Tree = ({ nodes, width, height, selectedId, onNodeSelected }) => {
         [onNodeSelected]
     );
 
-    const edges = nodes
-        .filter((node) => !!node.parent)
-        .map((node) => <Line key={node.label} begin={node.parent} end={node} />);
+    const nodesArray = Object.values(nodes);
 
-    const leafs = nodes.map((node) => {
+    const edges = nodesArray
+        .filter((node) => !!node.parent)
+        .map((node) => {
+            const begin = nodes[node.parent];
+            return <Line key={node.label} begin={begin} end={node} />;
+        });
+
+    const leafs = nodesArray.map((node) => {
         return <Node key={node.label} node={node} selected={node.label === selectedId} />;
     });
 
     return (
         <svg
             onClick={onClick}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseMove={onDrag}
             className="tree"
-            width={width + PADDING}
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink"
-            viewBox={`0 0 ${width + PADDING} ${height + PADDING}`}
         >
             {edges}
             {leafs}

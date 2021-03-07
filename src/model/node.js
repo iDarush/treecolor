@@ -23,7 +23,9 @@ export function makeTree(depth = 1, nodeSize = 50, color = "") {
         cy: rootId * nodeSize - nodeSize / 2,
     };
 
-    const nodes = [root];
+    const nodes = {
+        [root.label]: root,
+    };
     const queue = [root];
 
     while (queue.length) {
@@ -34,22 +36,26 @@ export function makeTree(depth = 1, nodeSize = 50, color = "") {
             const levelOffcet = Math.pow(2, depth - node.level - 1) - 1;
             const cxOffcet = (levelOffcet + 1) * nodeSize;
 
-            node.left = {
-                ...treeNode(idSequence++, node.level + 1, nodeSize, color, node),
+            const left = {
+                ...treeNode(idSequence++, node.level + 1, nodeSize, color, node.label),
                 cx: node.cx - cxOffcet,
                 cy: node.cy + nodeSize,
             };
+            node.left = left.label;
 
-            node.right = {
-                ...treeNode(idSequence++, node.level + 1, nodeSize, color, node),
+            const right = {
+                ...treeNode(idSequence++, node.level + 1, nodeSize, color, node.label),
                 cx: node.cx + cxOffcet,
                 cy: node.cy + nodeSize,
             };
+            node.right = right.label;
 
-            queue.push(node.left, node.right);
-            nodes.push(node.left, node.right);
+            queue.push(left, right);
+
+            nodes[left.label] = left;
+            nodes[right.label] = right;
         }
     }
 
-    return { width, height: depth * nodeSize, nodes };
+    return nodes;
 }

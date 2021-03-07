@@ -17,19 +17,24 @@ class App extends React.PureComponent {
             selected: null,
             color: initialColor,
             depth: initialDepth,
-            ...makeTree(initialDepth, NODE_SIZE, initialColor),
+            nodes: makeTree(initialDepth, NODE_SIZE, initialColor),
         };
     }
 
     render() {
-        const { color, depth, selected, ...tree } = this.state;
+        const { color, depth, selected, nodes } = this.state;
 
         return (
             <div className="app">
                 <Toolkit color={color} depth={depth} onColorChanged={this.setColor} onDepthChanged={this.setDepth} />
 
                 <div className="tree-wrapper">
-                    <Tree {...tree} selectedId={selected} onNodeSelected={this.selectNode} />
+                    <Tree
+                        nodes={nodes}
+                        selectedId={selected}
+                        onNodeSelected={this.selectNode}
+                        onNodeMoved={this.moveNode}
+                    />
                 </div>
             </div>
         );
@@ -37,20 +42,34 @@ class App extends React.PureComponent {
 
     selectNode = (id) => this.setState({ selected: id });
 
+    moveNode = (id, dx, dy) => {
+        const node = this.state.nodes[id];
+
+        if (node) {
+            const newNodes = {
+                ...this.state.nodes,
+                [id]: {
+                    ...node,
+                    cx: node.cx + dx,
+                    cy: node.cy + dy,
+                },
+            };
+
+            this.setState({ nodes: newNodes });
+        }
+    };
+
     setDepth = (depth) => {
-        const { color } = this.state;
-        const tree = makeTree(depth, NODE_SIZE, color);
+        const { color, selected } = this.state;
+        const nodes = makeTree(depth, NODE_SIZE, color);
 
-        const restoredSelection =
-            this.state.selected !== null ? tree.nodes.find((n) => n.label === this.state.selected) : null;
-
-        this.setState({ selected: restoredSelection ? restoredSelection.label : null, depth, ...tree });
+        this.setState({ selected: nodes[selected] ? nodes[selected].label : null, depth, nodes });
     };
 
     setColor = (color) => {
         const { selected, nodes } = this.state;
         if (selected !== null) {
-            const node = nodes.find((n) => n.label === selected);
+            const node = nodes[selected];
 
             if (node) {
                 this.setState({ color });
@@ -60,16 +79,21 @@ class App extends React.PureComponent {
     };
 
     animate = (color, id) => {
-        let node = null;
-        const newNodes = this.state.nodes.map((n) => {
-            return n.label !== id ? n : (node = { ...n, color });
-        });
+        const node = this.state.nodes[id];
 
         if (node) {
+            const newNodes = {
+                ...this.state.nodes,
+                [id]: {
+                    ...node,
+                    color,
+                },
+            };
+
             this.setState({ nodes: newNodes }, () => {
-                const parent = node.parent ? this.state.nodes.find((n) => n.label === node.parent.label) : null;
-                const left = node.left ? this.state.nodes.find((n) => n.label === node.left.label) : null;
-                const right = node.right ? this.state.nodes.find((n) => n.label === node.right.label) : null;
+                const parent = this.state.nodes[node.parent];
+                const left = this.state.nodes[node.left];
+                const right = this.state.nodes[node.right];
 
                 if (parent && parent.color !== color) {
                     setTimeout(() => this.animate(color, parent.label), animationInterval());

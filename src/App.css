@@ -6,17 +6,25 @@
 }
 
 .tree-wrapper {
-    width: 100%;
+    flex: 1 1;
     text-align: center;
+    display: flex;
 }
 
 .tree {
     padding: 10px;
+    flex: 1 1;
+}
+
+.tree-node_leaf {
+    cursor: pointer;
 }
 
 .tree-node_text {
     font-size: 0.7rem;
     fill: white;
+    user-select: none;
+    cursor: pointer;
 }
 
 .toolkit > div {
