@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/treecolor/static/css/main.121004c1.chunk.css",
+    "main.js": "/treecolor/static/js/main.e85316ea.chunk.js",
+    "main.js.map": "/treecolor/static/js/main.e85316ea.chunk.js.map",
+    "runtime-main.js": "/treecolor/static/js/runtime-main.e49c3f46.js",
+    "runtime-main.js.map": "/treecolor/static/js/runtime-main.e49c3f46.js.map",
+    "static/js/2.b14e5ce9.chunk.js": "/treecolor/static/js/2.b14e5ce9.chunk.js",
+    "static/js/2.b14e5ce9.chunk.js.map": "/treecolor/static/js/2.b14e5ce9.chunk.js.map",
+    "index.html": "/treecolor/index.html",
+    "static/css/main.121004c1.chunk.css.map": "/treecolor/static/css/main.121004c1.chunk.css.map",
+    "static/js/2.b14e5ce9.chunk.js.LICENSE.txt": "/treecolor/static/js/2.b14e5ce9.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e49c3f46.js",
+    "static/js/2.b14e5ce9.chunk.js",
+    "static/css/main.121004c1.chunk.css",
+    "static/js/main.e85316ea.chunk.js"
+  ]
+}
