@@ -112,10 +112,10 @@ class App extends React.PureComponent {
 }
 
 const animationInterval = () => {
-    const min = 800;
-    const max = 1200;
+    const minTime = 800;
+    const maxTime = 1200;
 
-    const result = min + Math.random() * (max + 1 - min);
+    const result = minTime + Math.random() * (maxTime + 1 - minTime);
     return Math.floor(result);
 };
 

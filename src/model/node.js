@@ -13,8 +13,8 @@ const treeNode = (label, level, size, color, parent = null) => ({
 export function makeTree(depth = 1, nodeSize = 50, color = "") {
     let idSequence = 0;
 
-    const leafCont = Math.pow(2, depth - 1);
-    const width = leafCont * nodeSize + (leafCont - 1) * nodeSize;
+    const leafCount = Math.pow(2, depth - 1);
+    const width = leafCount * nodeSize + (leafCount - 1) * nodeSize;
 
     const rootId = 1;
     const root = {
